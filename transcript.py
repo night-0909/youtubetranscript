@@ -81,7 +81,7 @@ class Program():
             videos = scrapetube.get_channel(channel_id=self.idchannel, content_type=content_type, sort_by="newest")
             listVideos = list(videos)
 
-            limitVideos = 1
+            limitVideos = 10
             print(str(len(listVideos)) + ' ' + content_type)
             self.writelog(str(len(listVideos)) + ' ' + content_type)
             print("Subtitles number to download : " + str(limitVideos))
@@ -159,7 +159,7 @@ if __name__ == "__main__":
     # Youtube
     urlchannel = "https://www.youtube.com/@your_channel"
     idchannel = '' # Found channel id on Youtube by clicking "Share channel" then "Copy channel ID"
-    content_types = ["streams"] # Possible values : "streams", "videos", "shorts"
+    content_types = ["streams", "videos", "shorts"] # Possible values : "streams", "videos", "shorts"
     # Format
     tz = "Europe/Paris"
     dateFormats = {"dateString": "%d/%m/%Y %H:%M:%S", "dateDBString": "%Y-%m-%d %H:%M:%S", "dateFileString": "%d%m%Y%H%M%S"}
