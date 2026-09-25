@@ -19,7 +19,7 @@ def save_url_files(save_url, urlchannel, download_folder, urlfile, logfile):
             os.remove(urlfile)
         
         # Save url list of Youtube videos for this channel
-        yt_dlp_process = subprocess.Popen(['yt-dlp', "--flat-playlist", "--print-to-file", "%(url)s", urlfile, urlchannel],
+        yt_dlp_process = subprocess.Popen(['yt-dlp', "-v", "--flat-playlist", "--print-to-file", "%(url)s", urlfile, urlchannel],
                 stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         record_process_logfile(yt_dlp_process, logfile)
@@ -45,27 +45,24 @@ def download_url_files(download_url, urlchannel, download_folder, urlfile, logfi
                 print("File for video " + idVideo + " is already present")
                 continue
 
-            success = False
-            while success is False:
-                try:
-                    yt_dlp_process = subprocess.Popen(['yt-dlp', "--impersonate", "firefox", "--cookies", "cookiesYT.txt",
-                    "--extractor-args", "youtube:player-client=default,web_embedded,mweb", "--skip-download", "--write-auto-subs", "--sub-lang", "fr",
-                    "--sub-format", "srt", "-o", f"{download_folder}transcript_%(id)s.%(ext)s", url],
-                    stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-                    # Trace stdout and stderr of yt_dlp process
-                    record_process_logfile(yt_dlp_process, logfile)
-                    yt_dlp_process.wait()
-                    print("Return code : " + str(yt_dlp_process.returncode))
-                    if yt_dlp_process.returncode == 0:
-                        print("Success downloading")
-                        success = True
-                    else:
-                        print("Error downloading")
-                        success = False
+            try:
+                yt_dlp_process = subprocess.Popen(['yt-dlp', "-v", "--impersonate", "firefox", "--cookies", "Y:/_Documents_Perso/Perso/Dev/Youtube/cookiesYT.txt",
+                "--extractor-args", "youtube:player-client=default,web_embedded,mweb", "--skip-download", "--write-auto-subs", "--sub-lang", "fr",
+                "--sub-format", "srt", "-o", f"{download_folder}transcript_%(id)s.%(ext)s", '--remote-components', 'ejs:github', '--js-runtimes', 'deno:c:/users/sylvain/.deno/bin',
+                url],
+                stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                # Trace stdout and stderr of yt_dlp process
+                record_process_logfile(yt_dlp_process, logfile)
+                yt_dlp_process.wait()
+                print("Return code : " + str(yt_dlp_process.returncode))
+                if yt_dlp_process.returncode == 0:
+                    print("Success downloading")
+                else:
+                    print("Error downloading")
 
-                    time.sleep(30)
-                except Exception as e:
-                    print(f"url={url} Error yt-dlp : exception={e}")
+                time.sleep(30)
+            except Exception as e:
+                print(f"url={url} Error yt-dlp : exception={e}")
 
 if __name__ == "__main__":
     # Settings
@@ -80,4 +77,3 @@ if __name__ == "__main__":
     save_url_files(save_url, urlchannel, download_folder, urlfile, logfile)
     download_url_files(download_url, urlchannel, download_folder, urlfile, logfile)
     
-
